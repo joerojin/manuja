@@ -1,0 +1,607 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuja's Homecoming December 17th - DJ Selection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        .feature-yes {
+            background-color: #10B981;
+            color: white;
+        }
+        .feature-no {
+            background-color: #EF4444;
+            color: white;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .value-meter {
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #EF4444 0%, #F59E0B 50%, #10B981 100%);
+        }
+        .value-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid #3B82F6;
+            position: absolute;
+            top: -2px;
+            transform: translateX(-50%);
+        }
+        .header-bg {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+        }
+        .contact-btn {
+            transition: all 0.3s ease;
+        }
+        .contact-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header with event title -->
+        <div class="header-bg text-white rounded-xl p-8 mb-8 shadow-lg">
+            <h1 class="text-4xl font-bold mb-2">Manuja's Homecoming</h1>
+            <p class="text-xl font-light">December 17th - DJ Selection</p>
+            <div class="mt-4 bg-white bg-opacity-20 inline-flex px-4 py-2 rounded-full">
+                <i class="fas fa-info-circle mt-1 mr-2"></i>
+                <p>Compare DJs based on price and features to find the best value</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Filters -->
+            <div class="bg-white p-6 rounded-xl shadow-md lg:col-span-1">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">Filter Options</h2>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Max Budget (LKR)</label>
+                    <input type="range" id="budgetFilter" min="25000" max="40000" step="1000" value="40000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>25K</span>
+                        <span>30K</span>
+                        <span>35K</span>
+                        <span>40K</span>
+                    </div>
+                    <div class="text-center mt-2">
+                        <span id="budgetValue" class="font-medium text-indigo-600">40,000 LKR</span>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">Must-have Features</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="form-checkbox text-indigo-600" checked>
+                            <span class="ml-2 text-gray-700">Smoke Machine</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="form-checkbox text-indigo-600">
+                            <span class="ml-2 text-gray-700">Snow Machine</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="form-checkbox text-indigo-600">
+                            <span class="ml-2 text-gray-700">LED Pixel Booth</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                    <select id="sortBy" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="value-desc" selected>Best Value First</option>
+                        <option value="features-desc">Most Features First</option>
+                    </select>
+                </div>
+
+                <button id="resetFilters" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition">
+                    Reset All Filters
+                </button>
+            </div>
+
+            <!-- DJ Cards -->
+            <div class="lg:col-span-3">
+                <div id="djContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- DJ cards will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800">Detailed Feature Comparison</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DJ Name</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Moving Beam Lights</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Color Wash Lights</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Laser Light</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Smoke Machine</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Snow Machine</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">LED Pixel Booth</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value Score</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comparisonBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Table rows will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Value Calculator -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Value For Money Calculator</h2>
+            <p class="text-gray-600 mb-6">Adjust the importance of each feature to see how it affects the value score.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Moving Beam Lights Importance</label>
+                        <input type="range" class="feature-weight w-full" data-feature="movingLights" min="0" max="5" value="3">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Color Wash Lights Importance</label>
+                        <input type="range" class="feature-weight w-full" data-feature="colorLights" min="0" max="5" value="3">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Laser Light Importance</label>
+                        <input type="range" class="feature-weight w-full" data-feature="laserLight" min="0" max="5" value="3">
+                    </div>
+                </div>
+                <div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Smoke Machine Importance</label>
+                        <input type="range" class="feature-weight w-full" data-feature="smokeMachine" min="0" max="5" value="3">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Snow Machine Importance</label>
+                        <input type="range" class="feature-weight w-full" data-feature="snowMachine" min="0" max="5" value="3">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">LED Booth Importance</label>
+                        <input type="range" class="feature-weight w-full" data-feature="ledBooth" min="0" max="5" value="3">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendation -->
+        <div id="recommendation" class="bg-indigo-100 border-l-4 border-indigo-500 p-4 rounded-lg">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-crown text-indigo-600 text-2xl"></i>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-lg font-medium text-indigo-800">Our Recommendation</h3>
+                    <div id="recommendationContent" class="mt-2 text-indigo-700">
+                        <p>Adjust filters and feature importance to see our recommendation for the best value DJ.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DJ data
+        const djData = [
+            {
+                name: "DJ Dasun",
+                price: 35000,
+                movingLights: 2,
+                colorLights: 4,
+                laserLight: 1,
+                smokeMachine: true,
+                snowMachine: true,
+                ledBooth: true,
+                facebook: "https://www.facebook.com/profile.php?id=100051054864692",
+                phone: "071 639 2146",
+                image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            },
+            {
+                name: "MR DJ",
+                price: 32000,
+                movingLights: 2,
+                colorLights: 4,
+                laserLight: 1,
+                smokeMachine: true,
+                snowMachine: false,
+                ledBooth: false,
+                facebook: "https://www.facebook.com/classicentertainments",
+                phone: "077 906 6444",
+                image: "https://images.unsplash.com/photo-1496293455970-f8581aae0e3b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            },
+            {
+                name: "The Wedding DJ",
+                price: 30000,
+                movingLights: 2,
+                colorLights: 4,
+                laserLight: 1,
+                smokeMachine: true,
+                snowMachine: false,
+                ledBooth: false,
+                facebook: "https://www.facebook.com/Theweddingdj.lk",
+                phone: "071 423 4667",
+                image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            }
+        ];
+
+        // Feature weights
+        const featureWeights = {
+            movingLights: 3,
+            colorLights: 3,
+            laserLight: 3,
+            smokeMachine: 3,
+            snowMachine: 3,
+            ledBooth: 3
+        };
+
+        // DOM elements
+        const djContainer = document.getElementById('djContainer');
+        const comparisonBody = document.getElementById('comparisonBody');
+        const budgetFilter = document.getElementById('budgetFilter');
+        const budgetValue = document.getElementById('budgetValue');
+        const sortBy = document.getElementById('sortBy');
+        const resetFilters = document.getElementById('resetFilters');
+        const featureWeightSliders = document.querySelectorAll('.feature-weight');
+        const recommendationContent = document.getElementById('recommendationContent');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDJDisplay();
+            updateFeatureWeights();
+        });
+
+        // Event listeners
+        budgetFilter.addEventListener('input', function() {
+            budgetValue.textContent = new Intl.NumberFormat('en-US').format(this.value) + ' LKR';
+            updateDJDisplay();
+        });
+
+        sortBy.addEventListener('change', updateDJDisplay);
+        resetFilters.addEventListener('click', resetAllFilters);
+
+        featureWeightSliders.forEach(slider => {
+            slider.addEventListener('input', function() {
+                const feature = this.dataset.feature;
+                featureWeights[feature] = parseInt(this.value);
+                updateDJDisplay();
+            });
+        });
+
+        // Functions
+        function calculateValueScore(dj) {
+            // Calculate total possible score
+            const maxScore = 
+                (5 * featureWeights.movingLights) + 
+                (5 * featureWeights.colorLights) + 
+                (5 * featureWeights.laserLight) + 
+                (1 * featureWeights.smokeMachine) + 
+                (1 * featureWeights.snowMachine) + 
+                (1 * featureWeights.ledBooth);
+            
+            // Calculate actual score
+            const score = 
+                (dj.movingLights * featureWeights.movingLights) + 
+                (dj.colorLights * featureWeights.colorLights) + 
+                (dj.laserLight * featureWeights.laserLight) + 
+                (dj.smokeMachine ? featureWeights.smokeMachine : 0) + 
+                (dj.snowMachine ? featureWeights.snowMachine : 0) + 
+                (dj.ledBooth ? featureWeights.ledBooth : 0);
+            
+            // Normalize to 0-100
+            const normalizedScore = (score / maxScore) * 100;
+            
+            // Adjust for price (higher score for lower price with same features)
+            const priceFactor = 1 - (dj.price / 40000); // Assuming 40k is max price
+            const finalScore = normalizedScore * 0.7 + priceFactor * 30;
+            
+            return Math.round(finalScore);
+        }
+
+        function updateDJDisplay() {
+            const maxBudget = parseInt(budgetFilter.value);
+            const sortMethod = sortBy.value;
+            
+            // Filter and sort DJs
+            let filteredDJs = djData.filter(dj => dj.price <= maxBudget);
+            
+            // Calculate value scores
+            filteredDJs.forEach(dj => {
+                dj.valueScore = calculateValueScore(dj);
+            });
+            
+            // Sort based on selected method
+            switch(sortMethod) {
+                case 'price-asc':
+                    filteredDJs.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    filteredDJs.sort((a, b) => b.price - a.price);
+                    break;
+                case 'value-desc':
+                    filteredDJs.sort((a, b) => b.valueScore - a.valueScore);
+                    break;
+                case 'features-desc':
+                    filteredDJs.sort((a, b) => {
+                        const aFeatures = a.movingLights + a.colorLights + a.laserLight + 
+                                         (a.smokeMachine ? 1 : 0) + (a.snowMachine ? 1 : 0) + (a.ledBooth ? 1 : 0);
+                        const bFeatures = b.movingLights + b.colorLights + b.laserLight + 
+                                         (b.smokeMachine ? 1 : 0) + (b.snowMachine ? 1 : 0) + (b.ledBooth ? 1 : 0);
+                        return bFeatures - aFeatures;
+                    });
+                    break;
+            }
+            
+            // Update DJ cards
+            renderDJCards(filteredDJs);
+            
+            // Update comparison table
+            renderComparisonTable(filteredDJs);
+            
+            // Update recommendation
+            updateRecommendation(filteredDJs);
+        }
+
+        function renderDJCards(djs) {
+            djContainer.innerHTML = '';
+            
+            if (djs.length === 0) {
+                djContainer.innerHTML = `
+                    <div class="col-span-full text-center py-10">
+                        <i class="fas fa-music text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-500">No DJs match your current filters</h3>
+                        <p class="text-gray-400">Try adjusting your budget or feature requirements</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            djs.forEach(dj => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-md overflow-hidden card-hover transition duration-300';
+                card.innerHTML = `
+                    <div class="relative">
+                        <img class="w-full h-48 object-cover" src="${dj.image}" alt="${dj.name}">
+                        <div class="absolute top-0 right-0 bg-indigo-600 text-white px-3 py-1 rounded-bl-lg">
+                            ${dj.valueScore}% Value
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">${dj.name}</h3>
+                            <span class="text-lg font-semibold text-indigo-600">${new Intl.NumberFormat('en-US').format(dj.price)} LKR</span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex items-center mb-1">
+                                <span class="text-sm font-medium text-gray-500 mr-2">Lighting:</span>
+                                <span class="text-sm">${dj.movingLights} Beam, ${dj.colorLights} Wash, ${dj.laserLight} Laser</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                <span class="text-xs px-2 py-1 rounded-full ${dj.smokeMachine ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${dj.smokeMachine ? '✓ Smoke Machine' : '✗ Smoke Machine'}
+                                </span>
+                                <span class="text-xs px-2 py-1 rounded-full ${dj.snowMachine ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${dj.snowMachine ? '✓ Snow Machine' : '✗ Snow Machine'}
+                                </span>
+                                <span class="text-xs px-2 py-1 rounded-full ${dj.ledBooth ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${dj.ledBooth ? '✓ LED Booth' : '✗ LED Booth'}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <div class="flex justify-between text-sm text-gray-500 mb-1">
+                                <span>Value for Money</span>
+                                <span>${dj.valueScore}/100</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-red-400 via-yellow-400 to-green-400 h-2 rounded-full" style="width: ${dj.valueScore}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 flex space-x-2">
+                            <a href="${dj.facebook}" target="_blank" class="contact-btn flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition flex items-center justify-center">
+                                <i class="fab fa-facebook-f mr-2"></i> Facebook
+                            </a>
+                            <a href="tel:${dj.phone.replace(/\s+/g, '')}" class="contact-btn flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition flex items-center justify-center">
+                                <i class="fas fa-phone-alt mr-2"></i> Call
+                            </a>
+                        </div>
+                    </div>
+                `;
+                djContainer.appendChild(card);
+            });
+        }
+
+        function renderComparisonTable(djs) {
+            comparisonBody.innerHTML = '';
+            
+            djs.forEach(dj => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <img class="h-10 w-10 rounded-full" src="${dj.image}" alt="${dj.name}">
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${dj.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900 font-medium">${new Intl.NumberFormat('en-US').format(dj.price)} LKR</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${dj.movingLights}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${dj.colorLights}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${dj.laserLight}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="feature-icon ${dj.smokeMachine ? 'feature-yes' : 'feature-no'}">
+                            <i class="fas ${dj.smokeMachine ? 'fa-check' : 'fa-times'} text-xs"></i>
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="feature-icon ${dj.snowMachine ? 'feature-yes' : 'feature-no'}">
+                            <i class="fas ${dj.snowMachine ? 'fa-check' : 'fa-times'} text-xs"></i>
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="feature-icon ${dj.ledBooth ? 'feature-yes' : 'feature-no'}">
+                            <i class="fas ${dj.ledBooth ? 'fa-check' : 'fa-times'} text-xs"></i>
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="value-meter w-24 h-3 relative">
+                                <div class="value-indicator" style="left: ${dj.valueScore}%"></div>
+                            </div>
+                            <span class="ml-2 text-sm font-medium">${dj.valueScore}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex space-x-2">
+                            <a href="${dj.facebook}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            <a href="tel:${dj.phone.replace(/\s+/g, '')}" class="text-green-600 hover:text-green-800">
+                                <i class="fas fa-phone-alt"></i>
+                            </a>
+                        </div>
+                    </td>
+                `;
+                comparisonBody.appendChild(row);
+            });
+        }
+
+        function updateRecommendation(djs) {
+            if (djs.length === 0) {
+                recommendationContent.innerHTML = `
+                    <p>No DJs match your current filters. Try adjusting your budget or feature requirements.</p>
+                `;
+                return;
+            }
+            
+            // Find DJ with highest value score
+            const bestValueDJ = djs.reduce((prev, current) => 
+                (prev.valueScore > current.valueScore) ? prev : current
+            );
+            
+            // Find cheapest DJ
+            const cheapestDJ = djs.reduce((prev, current) => 
+                (prev.price < current.price) ? prev : current
+            );
+            
+            // Find DJ with most features
+            const mostFeaturesDJ = djs.reduce((prev, current) => {
+                const prevFeatures = prev.movingLights + prev.colorLights + prev.laserLight + 
+                                   (prev.smokeMachine ? 1 : 0) + (prev.snowMachine ? 1 : 0) + (prev.ledBooth ? 1 : 0);
+                const currentFeatures = current.movingLights + current.colorLights + current.laserLight + 
+                                      (current.smokeMachine ? 1 : 0) + (current.snowMachine ? 1 : 0) + (current.ledBooth ? 1 : 0);
+                return (prevFeatures > currentFeatures) ? prev : current;
+            });
+            
+            recommendationContent.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-medium text-indigo-800 mb-2">Best Value</h4>
+                        <p class="text-sm"><span class="font-semibold">${bestValueDJ.name}</span> (${bestValueDJ.valueScore}% value score)</p>
+                        <p class="text-xs mt-1">${new Intl.NumberFormat('en-US').format(bestValueDJ.price)} LKR with great features</p>
+                        <div class="mt-2 flex space-x-2">
+                            <a href="${bestValueDJ.facebook}" target="_blank" class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                <i class="fab fa-facebook-f mr-1"></i>Profile
+                            </a>
+                            <a href="tel:${bestValueDJ.phone.replace(/\s+/g, '')}" class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                                <i class="fas fa-phone-alt mr-1"></i>${bestValueDJ.phone}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-medium text-indigo-800 mb-2">Most Affordable</h4>
+                        <p class="text-sm"><span class="font-semibold">${cheapestDJ.name}</span> (${new Intl.NumberFormat('en-US').format(cheapestDJ.price)} LKR)</p>
+                        <p class="text-xs mt-1">Save money while still getting good features</p>
+                        <div class="mt-2 flex space-x-2">
+                            <a href="${cheapestDJ.facebook}" target="_blank" class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                <i class="fab fa-facebook-f mr-1"></i>Profile
+                            </a>
+                            <a href="tel:${cheapestDJ.phone.replace(/\s+/g, '')}" class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                                <i class="fas fa-phone-alt mr-1"></i>${cheapestDJ.phone}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-medium text-indigo-800 mb-2">Most Features</h4>
+                        <p class="text-sm"><span class="font-semibold">${mostFeaturesDJ.name}</span></p>
+                        <p class="text-xs mt-1">Comes with the most lighting and effects options</p>
+                        <div class="mt-2 flex space-x-2">
+                            <a href="${mostFeaturesDJ.facebook}" target="_blank" class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                <i class="fab fa-facebook-f mr-1"></i>Profile
+                            </a>
+                            <a href="tel:${mostFeaturesDJ.phone.replace(/\s+/g, '')}" class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                                <i class="fas fa-phone-alt mr-1"></i>${mostFeaturesDJ.phone}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm">
+                    <p>For Manuja's Homecoming on December 17th with 50 guests, we recommend <span class="font-semibold">${bestValueDJ.name}</span> as the best balance of price and features.</p>
+                    ${bestValueDJ.ledBooth ? '<p class="mt-1">They include a LED Pixel Booth which could be great for guest photos!</p>' : ''}
+                </div>
+            `;
+        }
+
+        function resetAllFilters() {
+            budgetFilter.value = 40000;
+            budgetValue.textContent = '40,000 LKR';
+            sortBy.value = 'value-desc';
+            
+            // Reset feature weights
+            featureWeightSliders.forEach(slider => {
+                slider.value = 3;
+                featureWeights[slider.dataset.feature] = 3;
+            });
+            
+            updateDJDisplay();
+        }
+
+        function updateFeatureWeights() {
+            featureWeightSliders.forEach(slider => {
+                slider.value = featureWeights[slider.dataset.feature];
+            });
+        }
+    </script>
+</body>
+</html>
